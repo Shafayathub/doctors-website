@@ -4,8 +4,8 @@ import bg from './../../assets/images/bg.png';
 
 const Banner = () => {
   return (
-    <div
-      className="hero bg-base-200 pb-10 lg:pb-32"
+    <section
+      className="hero bg-base-200 pb-10"
       style={{
         backgroundImage: `url(${bg})`,
       }}>
@@ -27,7 +27,7 @@ const Banner = () => {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
