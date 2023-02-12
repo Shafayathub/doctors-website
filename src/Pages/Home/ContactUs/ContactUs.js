@@ -4,15 +4,13 @@ import appointment from '../../../assets/images/appointment.png';
 const ContactUs = () => {
   return (
     <section
-      className="mt-16 lg:mt-32"
+      className="mt-16 lg:mt-32 p-10"
       style={{
         backgroundImage: `url(${appointment})`,
       }}>
       <div className="text-center">
-        <h3 className="text-xl font bold text-primary uppercase">
-          Our Services
-        </h3>
-        <h2 className="text-3xl text-white">Services We Provide</h2>
+        <h3 className="text-xl font bold text-secondary">Contact Us</h3>
+        <h2 className="text-3xl text-white">Stay connected with us</h2>
       </div>
       <div className="hero">
         <div className="hero-content">

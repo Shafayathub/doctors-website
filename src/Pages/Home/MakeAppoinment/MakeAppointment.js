@@ -17,7 +17,7 @@ const MakeAppointment = () => {
             alt="Appoinment"
           />
           <div>
-            <h3 className="text-xl font bold text-primary uppercase">
+            <h3 className="text-xl font bold text-secondary uppercase">
               Appoinment
             </h3>
             <h2 className="text-4xl text-white">Make an Appoinment Today</h2>
