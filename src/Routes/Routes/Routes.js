@@ -4,6 +4,7 @@ import Appointment from '../../Pages/Appointment/Appointment';
 import Home from '../../Pages/Home/Home';
 import Login from '../../Pages/Login/Login';
 import Register from '../../Pages/Login/Register';
+import RequireAuth from '../../Pages/Login/RequireAuth';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +25,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/appointment',
-        element: <Appointment></Appointment>,
+        element: (
+          <RequireAuth>
+            <Appointment></Appointment>
+          </RequireAuth>
+        ),
       },
     ],
   },

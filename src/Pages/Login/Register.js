@@ -5,7 +5,7 @@ import {
   useUpdateProfile,
 } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import google from '../../assets/images/google.png';
 import auth from '../../firebase/firebase.config';
 import Loading from '../Shared/Loading';
@@ -14,6 +14,9 @@ const Register = () => {
     useCreateUserWithEmailAndPassword(auth);
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const [updateProfile, updating, updatingError] = useUpdateProfile(auth);
+  let navigate = useNavigate();
+  let location = useLocation();
+  const from = location.state?.from?.pathname || '/';
   const {
     register,
     handleSubmit,
@@ -23,6 +26,7 @@ const Register = () => {
     const { name, email, password } = data;
     await createUserWithEmailAndPassword(email, password);
     await updateProfile({ displayName: name });
+    navigate(from, { replace: true });
     console.log(errors);
   };
   let ERROR;
@@ -119,7 +123,10 @@ const Register = () => {
         </p>
         <div className="divider">OR</div>
         <button
-          onClick={() => signInWithGoogle()}
+          onClick={async () => {
+            await signInWithGoogle();
+            navigate(from, { replace: true });
+          }}
           className="btn btn-outline w-full">
           <img className="w-8 mr-2 rounded-lg" src={google} alt="GOOGLE" />{' '}
           CONTINUE WITH GOOGLE

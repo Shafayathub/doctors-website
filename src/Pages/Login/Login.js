@@ -1,30 +1,38 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import google from '../../assets/images/google.png';
 import auth from '../../firebase/firebase.config';
-import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import {
+  useSignInWithEmailAndPassword,
+  useSignInWithGoogle,
+} from 'react-firebase-hooks/auth';
 import Loading from '../Shared/Loading';
 const Login = () => {
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+  let navigate = useNavigate();
+  let location = useLocation();
+  const from = location.state?.from?.pathname || '/';
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const handleLogin = (data) => {
-    console.log(data);
-    console.log(errors);
+  const handleLogin = async (data) => {
+    const { email, password } = data;
+    await signInWithEmailAndPassword(email, password);
+    navigate(from, { replace: true });
   };
-  if (gUser) {
+  if (gUser || user) {
     console.log(gUser);
   }
-  if (gLoading) {
+  if (gLoading || loading) {
     return <Loading></Loading>;
   }
-  if (gError) {
-    console.log(gError);
+  if (gError || error) {
+    console.log(gError || error);
   }
   return (
     <section className="mt-5 flex justify-center">
@@ -91,7 +99,10 @@ const Login = () => {
         </p>
         <div className="divider">OR</div>
         <button
-          onClick={() => signInWithGoogle()}
+          onClick={async () => {
+            await signInWithGoogle();
+            navigate(from, { replace: true });
+          }}
           className="btn btn-outline w-full">
           <img className="w-8 mr-2 rounded-lg" src={google} alt="GOOGLE" />{' '}
           CONTINUE WITH GOOGLE
