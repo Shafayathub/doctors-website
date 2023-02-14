@@ -1,36 +1,65 @@
 import React from 'react';
+import {
+  useCreateUserWithEmailAndPassword,
+  useSignInWithGoogle,
+  useUpdateProfile,
+} from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import google from '../../assets/images/google.png';
 import auth from '../../firebase/firebase.config';
-import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import Loading from '../Shared/Loading';
-const Login = () => {
+const Register = () => {
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-
+  const [updateProfile, updating, updatingError] = useUpdateProfile(auth);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const handleLogin = (data) => {
-    console.log(data);
+  const handleRegister = async (data) => {
+    const { name, email, password } = data;
+    await createUserWithEmailAndPassword(email, password);
+    await updateProfile({ displayName: name });
     console.log(errors);
   };
-  if (gUser) {
-    console.log(gUser);
+  let ERROR;
+  if (error || gError || updatingError) {
+    return (ERROR = (
+      <p>
+        <small>Error: {error.message}</small>
+      </p>
+    ));
   }
-  if (gLoading) {
+  if (loading || gLoading || updating) {
     return <Loading></Loading>;
   }
-  if (gError) {
-    console.log(gError);
+  if (user || gUser) {
+    return console.log(user || gUser);
   }
   return (
     <section className="mt-5 flex justify-center">
       <div className="lg:w-96 border rounded-lg shadow-xl p-10">
-        <h4 className="text-3xl font-semibold text-center">Login</h4>
-        <form className="mt-5" onSubmit={handleSubmit(handleLogin)}>
+        <h4 className="text-3xl font-semibold text-center">Register</h4>
+        <form className="mt-5" onSubmit={handleSubmit(handleRegister)}>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Email</span>
+            </label>
+            <input
+              type="text"
+              {...register('name', { required: 'Please enter your name' })}
+              placeholder="Your Name"
+              className="input input-bordered w-full max-w-xs"
+            />
+            {errors.name && (
+              <p role="alert" className="text-red-600">
+                {errors.name?.message}
+              </p>
+            )}
+          </div>
           <div className="form-control w-full max-w-xs">
             <label className="label">
               <span className="label-text">Email</span>
@@ -56,9 +85,10 @@ const Login = () => {
               {...register(
                 'password',
                 {
-                  minLength: {
-                    value: 8,
-                    message: 'Password must be eight characters or longer',
+                  pattern: {
+                    value: /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+                    message:
+                      'Password must contain uppercase, numeric & special character & must be eight characters or longer',
                   },
                 },
                 {
@@ -73,10 +103,8 @@ const Login = () => {
                 {errors.password?.message}
               </p>
             )}
-            <label className="label">
-              <span className="label-text">Forget Password</span>
-            </label>
           </div>
+          {ERROR}
 
           <input
             className="btn btn-accent w-full max-w-xs mt-3"
@@ -84,9 +112,9 @@ const Login = () => {
           />
         </form>
         <p className="mt-2">
-          New here?
-          <Link to="/register" className="ml-1 text-secondary">
-            Create an account
+          Already have an account?
+          <Link to="/login" className="ml-1 text-secondary">
+            Login here
           </Link>
         </p>
         <div className="divider">OR</div>
@@ -101,4 +129,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

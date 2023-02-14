@@ -1,26 +1,42 @@
 import React from 'react';
+import { useAuthState, useSignOut } from 'react-firebase-hooks/auth';
 import { Link } from 'react-router-dom';
+import auth from '../../../firebase/firebase.config';
 
 const Navbar = () => {
+  const [user] = useAuthState(auth);
+  const [signOut, loading, error] = useSignOut(auth);
   const menuItems = (
     <React.Fragment>
       <li>
         <Link to="/">Home</Link>
       </li>
       <li>
-        <Link to="/">Appoinment</Link>
-      </li>
-      <li>
-        <Link to="/">About</Link>
+        <Link to="/appointment">Appointment</Link>
       </li>
       <li>
         <Link to="/">Reviews</Link>
       </li>
       <li>
+        <Link to="/">About</Link>
+      </li>
+      <li>
         <Link to="/">Contact Us</Link>
       </li>
       <li>
-        <Link to="/">Login</Link>
+        {user ? (
+          <button
+            onClick={async () => {
+              const success = await signOut();
+              if (success) {
+                alert('You are sign out');
+              }
+            }}>
+            signout
+          </button>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
       </li>
     </React.Fragment>
   );
@@ -45,7 +61,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 font-semibold">
             {menuItems}
           </ul>
         </div>
@@ -54,7 +70,7 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{menuItems}</ul>
+        <ul className="menu menu-horizontal px-1 font-semibold">{menuItems}</ul>
       </div>
     </div>
   );
