@@ -1,11 +1,16 @@
 import React from 'react';
 import { useAuthState, useSignOut } from 'react-firebase-hooks/auth';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import auth from '../../../firebase/firebase.config';
+import Loading from '../Loading';
 
 const Navbar = () => {
   const [user] = useAuthState(auth);
-  const [signOut, loading, error] = useSignOut(auth);
+  const [signOut, loading] = useSignOut(auth);
+  if (loading) {
+    return <Loading></Loading>;
+  }
   const menuItems = (
     <React.Fragment>
       <li>
@@ -26,13 +31,15 @@ const Navbar = () => {
       <li>
         {user ? (
           <button
+            className="btn btn-outline"
             onClick={async () => {
-              const success = await signOut();
-              if (success) {
-                alert('You are sign out');
+              const agree = window.confirm('Do you really want to log Out?');
+              if (agree) {
+                await signOut();
+                toast('Signed out');
               }
             }}>
-            signout
+            Sign out
           </button>
         ) : (
           <Link to="/login">Login</Link>

@@ -8,6 +8,7 @@ import {
   useSignInWithGoogle,
 } from 'react-firebase-hooks/auth';
 import Loading from '../Shared/Loading';
+import ForgetPass from './ForgetPass';
 const Login = () => {
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const [signInWithEmailAndPassword, user, loading, error] =
@@ -81,8 +82,8 @@ const Login = () => {
                 {errors.password?.message}
               </p>
             )}
-            <label className="label">
-              <span className="label-text">Forget Password</span>
+            <label htmlFor="forgetPass-modal" className="link link-primary">
+              Forget Password
             </label>
           </div>
 
@@ -108,6 +109,7 @@ const Login = () => {
           CONTINUE WITH GOOGLE
         </button>
       </div>
+      <ForgetPass></ForgetPass>
     </section>
   );
 };

@@ -9,9 +9,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import google from '../../assets/images/google.png';
 import auth from '../../firebase/firebase.config';
 import Loading from '../Shared/Loading';
+
+import { toast } from 'react-toastify';
+
 const Register = () => {
   const [createUserWithEmailAndPassword, user, loading, error] =
-    useCreateUserWithEmailAndPassword(auth);
+    useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const [updateProfile, updating, updatingError] = useUpdateProfile(auth);
   let navigate = useNavigate();
@@ -27,7 +30,9 @@ const Register = () => {
     await createUserWithEmailAndPassword(email, password);
     await updateProfile({ displayName: name });
     navigate(from, { replace: true });
-    console.log(errors);
+    toast(
+      'Check your email to verify. After verifying reload your site please.'
+    );
   };
   let ERROR;
   if (error || gError || updatingError) {

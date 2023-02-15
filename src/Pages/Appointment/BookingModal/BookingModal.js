@@ -1,7 +1,11 @@
 import { format } from 'date-fns';
 import React from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import auth from '../../../firebase/firebase.config';
+import Loading from '../../Shared/Loading';
 
 const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
+  const [user, loading] = useAuthState(auth);
   const { slots, name } = treatment;
   const date = format(selectedDate, 'PP');
   const handleBooking = (e) => {
@@ -24,6 +28,9 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
     // To Close the Modal
     setTreatment(null);
   };
+  if (loading) {
+    return <Loading></Loading>;
+  }
   return (
     <>
       {/* Put this part before </body> tag */}
@@ -43,6 +50,13 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
             onSubmit={handleBooking}
             className="grid grid-cols-1 gap-3 mt-6">
             <input
+              name="email"
+              type="email"
+              disabled
+              value={user?.email || ' '}
+              className="input input-bordered w-full"
+            />
+            <input
               type="text"
               value={date}
               disabled
@@ -61,19 +75,15 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
                 <option disabled>No Available Slot</option>
               )}
             </select>
+
             <input
               name="name"
               type="text"
-              placeholder="Name"
+              placeholder="Patient Name"
               className="input input-bordered w-full"
               required
             />
-            <input
-              name="email"
-              type="email"
-              placeholder="Email(optional)"
-              className="input input-bordered w-full"
-            />
+
             <input
               name="phone"
               type="text"
