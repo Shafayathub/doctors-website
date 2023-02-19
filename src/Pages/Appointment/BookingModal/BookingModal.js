@@ -1,12 +1,13 @@
 import { format } from 'date-fns';
 import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { toast } from 'react-toastify';
 import auth from '../../../firebase/firebase.config';
 import Loading from '../../Shared/Loading';
 
-const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
+const BookingModal = ({ treatment, setTreatment, selectedDate, refetch }) => {
   const [user, loading] = useAuthState(auth);
-  const { slots, name } = treatment;
+  const { _id, slots, name } = treatment;
   const date = format(selectedDate, 'PP');
   const handleBooking = (e) => {
     e.preventDefault();
@@ -16,6 +17,7 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
     const selectedSlot = form.selectedSlot.value;
     const phone = form.phone.value;
     const bookingData = {
+      appoinmentId: _id,
       appointmentDate: date,
       slot: selectedSlot,
       treatment: name,
@@ -23,10 +25,29 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
       email,
       phone,
     };
-    console.log(bookingData);
 
-    // To Close the Modal
-    setTreatment(null);
+    fetch('http://localhost:5000/booking', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(bookingData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success) {
+          toast(`Booking succesfull on ${date} at ${selectedSlot}`);
+        } else {
+          toast.error(
+            `Already have one on ${data.booking?.appointmentDate} at ${data.booking?.slot}`
+          );
+        }
+        // Update slots
+        refetch();
+        // To Close the Modal
+        setTreatment(null);
+      });
   };
   if (loading) {
     return <Loading></Loading>;
@@ -89,6 +110,7 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
               type="text"
               placeholder="phone number"
               className="input input-bordered w-full"
+              required
             />
             {
               <input

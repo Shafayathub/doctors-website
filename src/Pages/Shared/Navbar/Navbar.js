@@ -28,6 +28,11 @@ const Navbar = () => {
       <li>
         <Link to="/">Contact Us</Link>
       </li>
+      {user && (
+        <li>
+          <Link to="/dashboard">Dashboard</Link>
+        </li>
+      )}
       <li>
         {user ? (
           <button
@@ -76,6 +81,7 @@ const Navbar = () => {
           Doctors Portal
         </Link>
       </div>
+
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 font-semibold">{menuItems}</ul>
       </div>

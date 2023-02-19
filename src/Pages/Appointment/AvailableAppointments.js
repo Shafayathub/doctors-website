@@ -1,18 +1,36 @@
 import { format } from 'date-fns';
 import React from 'react';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
+import Loading from '../Shared/Loading';
 import AppointmentOption from './AppointmentOption';
 import BookingModal from './BookingModal/BookingModal';
 
 const AvailableAppointments = ({ selectedDate }) => {
-  const [appointmentOptions, setAppoinmentOptions] = useState([]);
+  // Using React Query for convenience
+
+  // const [appointmentOptions, setAppoinmentOptions] = useState([]);
+  // useEffect(() => {
+  //   fetch(`http://localhost:5000/available?date=${date}`)
+  //     .then((res) => res.json())
+  //     .then((data) => setAppoinmentOptions(data));
+  // }, [date]);
+
   const [treatment, setTreatment] = useState(null);
-  useEffect(() => {
-    fetch('http://localhost:5000/appointmentOptions')
-      .then((res) => res.json())
-      .then((data) => setAppoinmentOptions(data));
-  }, []);
+  const date = format(selectedDate, 'PP');
+  const {
+    data: appointmentOptions,
+    isLoading,
+    refetch,
+  } = useQuery(['available', date], () =>
+    fetch(`http://localhost:5000/available?date=${date}`).then((res) =>
+      res.json()
+    )
+  );
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
   return (
     <section className="mt-5 lg:mt-16">
       <p className="text-center text-secondary text-xl font-semibold">
@@ -22,7 +40,7 @@ const AvailableAppointments = ({ selectedDate }) => {
         Please Select a Service.
       </p>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-        {appointmentOptions.map((appointmentOption) => (
+        {appointmentOptions?.map((appointmentOption) => (
           <AppointmentOption
             key={appointmentOption._id}
             appointmentOption={appointmentOption}
@@ -34,7 +52,8 @@ const AvailableAppointments = ({ selectedDate }) => {
         <BookingModal
           treatment={treatment}
           setTreatment={setTreatment}
-          selectedDate={selectedDate}></BookingModal>
+          selectedDate={selectedDate}
+          refetch={refetch}></BookingModal>
       )}
     </section>
   );
