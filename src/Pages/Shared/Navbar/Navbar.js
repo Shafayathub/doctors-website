@@ -41,6 +41,7 @@ const Navbar = () => {
               const agree = window.confirm('Do you really want to log Out?');
               if (agree) {
                 await signOut();
+                await localStorage.removeItem('accessToken');
                 toast('Signed out');
               }
             }}>

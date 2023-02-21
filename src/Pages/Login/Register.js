@@ -11,6 +11,7 @@ import auth from '../../firebase/firebase.config';
 import Loading from '../Shared/Loading';
 
 import { toast } from 'react-toastify';
+import useToken from '../../hooks/useToken';
 
 const Register = () => {
   const [createUserWithEmailAndPassword, user, loading, error] =
@@ -25,11 +26,13 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  // Our custom hook
+  const [token] = useToken(user || gUser);
+
   const handleRegister = async (data) => {
     const { name, email, password } = data;
     await createUserWithEmailAndPassword(email, password);
     await updateProfile({ displayName: name });
-    navigate(from, { replace: true });
     toast(
       'Check your email to verify. After verifying reload your site please.'
     );
@@ -45,8 +48,8 @@ const Register = () => {
   if (loading || gLoading || updating) {
     return <Loading></Loading>;
   }
-  if (user || gUser) {
-    return console.log(user || gUser);
+  if (token) {
+    navigate(from, { replace: true });
   }
   return (
     <section className="mt-5 flex justify-center">

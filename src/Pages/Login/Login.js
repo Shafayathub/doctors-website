@@ -9,10 +9,12 @@ import {
 } from 'react-firebase-hooks/auth';
 import Loading from '../Shared/Loading';
 import ForgetPass from './ForgetPass';
+import useToken from '../../hooks/useToken';
 const Login = () => {
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
+  const [token] = useToken(gUser || user);
   let navigate = useNavigate();
   let location = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -24,10 +26,9 @@ const Login = () => {
   const handleLogin = async (data) => {
     const { email, password } = data;
     await signInWithEmailAndPassword(email, password);
-    navigate(from, { replace: true });
   };
-  if (gUser || user) {
-    console.log(gUser);
+  if (token) {
+    navigate(from, { replace: true });
   }
   if (gLoading || loading) {
     return <Loading></Loading>;
@@ -102,7 +103,6 @@ const Login = () => {
         <button
           onClick={async () => {
             await signInWithGoogle();
-            navigate(from, { replace: true });
           }}
           className="btn btn-outline w-full">
           <img className="w-8 mr-2 rounded-lg" src={google} alt="GOOGLE" />{' '}
