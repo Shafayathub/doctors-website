@@ -8,12 +8,15 @@ const Dashboard = () => {
   const [appointments, setAppoinments] = useState([]);
   const [user, loading] = useAuthState(auth);
   useEffect(() => {
-    fetch(`http://localhost:5000/booking?patient=${user.email}`, {
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-    })
+    fetch(
+      `https://server-doctors-website.onrender.com/booking?patient=${user.email}`,
+      {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }
+    )
       .then((res) => {
         if (res.status === 401 || res.status === 403) {
           signOut(auth);

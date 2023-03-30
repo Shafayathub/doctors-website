@@ -12,7 +12,7 @@ const AvailableAppointments = ({ selectedDate }) => {
 
   // const [appointmentOptions, setAppoinmentOptions] = useState([]);
   // useEffect(() => {
-  //   fetch(`http://localhost:5000/available?date=${date}`)
+  //   fetch(`https://server-doctors-website.onrender.com/available?date=${date}`)
   //     .then((res) => res.json())
   //     .then((data) => setAppoinmentOptions(data));
   // }, [date]);
@@ -24,9 +24,9 @@ const AvailableAppointments = ({ selectedDate }) => {
     isLoading,
     refetch,
   } = useQuery(['available', date], () =>
-    fetch(`http://localhost:5000/available?date=${date}`).then((res) =>
-      res.json()
-    )
+    fetch(
+      `https://server-doctors-website.onrender.com/available?date=${date}`
+    ).then((res) => res.json())
   );
   if (isLoading) {
     return <Loading></Loading>;
