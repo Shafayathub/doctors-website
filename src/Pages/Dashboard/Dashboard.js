@@ -1,3 +1,4 @@
+import { signOut } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import auth from '../../firebase/firebase.config';
@@ -13,7 +14,13 @@ const Dashboard = () => {
         authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          signOut(auth);
+          localStorage.removeItem('accessToken');
+        }
+        return res.json();
+      })
       .then((data) => setAppoinments(data));
   }, [user.email]);
   if (loading) {
@@ -34,17 +41,21 @@ const Dashboard = () => {
               <th>Treatment</th>
               <th>Date</th>
               <th>Time</th>
+              <th>Marking</th>
             </tr>
           </thead>
           <tbody>
             {/* <!-- row  --> */}
-            {appointments.map((appointment, index) => (
-              <tr className="hover">
+            {appointments?.map((appointment, index) => (
+              <tr key={index} className="hover">
                 <th>{index + 1}</th>
                 <td>{appointment?.patientName}</td>
                 <td>{appointment?.treatment}</td>
                 <td>{appointment?.appointmentDate}</td>
                 <td>{appointment?.slot}</td>
+                <button className="btn-xs btn-success text-white mt-3">
+                  Mark Done
+                </button>
               </tr>
             ))}
           </tbody>

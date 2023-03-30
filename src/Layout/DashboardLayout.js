@@ -2,8 +2,13 @@ import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Navbar from '../Pages/Shared/Navbar/Navbar';
 import { MdDashboardCustomize } from 'react-icons/md';
+import useAdmin from '../hooks/useAdmin';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import auth from '../firebase/firebase.config';
 
 const DashboardLayout = () => {
+  const [user] = useAuthState(auth);
+  const [admin] = useAdmin(user);
   return (
     <>
       <div className="navbar sticky top-0 z-10">
@@ -38,6 +43,11 @@ const DashboardLayout = () => {
             <li>
               <Link to="/dashboard/history">My History</Link>
             </li>
+            {admin && (
+              <li>
+                <Link to="/dashboard/users">All Users</Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

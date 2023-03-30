@@ -4,9 +4,11 @@ import Main from '../../Layout/Main';
 import Appointment from '../../Pages/Appointment/Appointment';
 import Dashboard from '../../Pages/Dashboard/Dashboard';
 import History from '../../Pages/Dashboard/History';
+import Users from '../../Pages/Dashboard/Users';
 import Home from '../../Pages/Home/Home';
 import Login from '../../Pages/Login/Login';
 import Register from '../../Pages/Login/Register';
+import RequireAdmin from '../../Pages/Login/RequireAdmin';
 import RequireAuth from '../../Pages/Login/RequireAuth';
 
 const router = createBrowserRouter([
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
       {
         path: '/dashboard/history',
         element: <History></History>,
+      },
+      {
+        path: '/dashboard/users',
+        element: (
+          <RequireAdmin>
+            <Users></Users>
+          </RequireAdmin>
+        ),
       },
     ],
   },
