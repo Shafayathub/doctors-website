@@ -18,7 +18,7 @@ const ContactUs = () => {
   };
   return (
     <section
-      className="mt-16 lg:mt-32 p-10"
+      className="mt-16 lg:mt-32 p-10 sm:p-5"
       style={{
         backgroundImage: `url(${appointment})`,
       }}>
@@ -29,7 +29,7 @@ const ContactUs = () => {
       <div className="hero">
         <div className="hero-content">
           <div className="card flex-shrink-0">
-            <form onSubmit={handleContactUs} className="card-body">
+            <form onSubmit={handleContactUs} className="card-body p-0">
               <div className="form-control">
                 <input
                   type="email"
